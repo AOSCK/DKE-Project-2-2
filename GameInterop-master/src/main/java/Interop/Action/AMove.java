@@ -7,11 +7,11 @@ import Interop.Geometry.Distance;
  *
  * The agent is allowed to specify the move distance in range limited by scenario parameters.
  */
-public final class Move implements Action, IntruderAction, GuardAction {
+public final class AMove implements Action, IntruderAction, GuardAction {
 
     private Distance distance;
 
-    public Move(Distance distance) {
+    public AMove(Distance distance) {
         this.distance = distance;
     }
 

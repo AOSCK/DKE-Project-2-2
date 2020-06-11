@@ -217,8 +217,8 @@ public class ActionTests extends SimpleUnitTest {
     private static void _test_guard_move() {
         Game game = _createGame(new ArrayList<>() {{
             this.add(new QueueGuard(
-                    new Move(new Distance(1)),
-                    new Move(new Distance(1.1))
+                    new AMove(new Distance(1)),
+                    new AMove(new Distance(1.1))
             ));
         }}, new ArrayList<>());
 
@@ -347,11 +347,11 @@ public class ActionTests extends SimpleUnitTest {
     private static void _test_intruder_move_and_sprinting() {
         Game game = _createGame(new ArrayList<>(), new ArrayList<>() {{
             this.add(new QueueIntruder(
-                    new Move(new Distance(1)),
-                    new Move(new Distance(2)),
-                    new Move(new Distance(0.5)),
+                    new AMove(new Distance(1)),
+                    new AMove(new Distance(2)),
+                    new AMove(new Distance(0.5)),
                     new NoAction(), new NoAction(),
-                    new Move(new Distance(2.1))
+                    new AMove(new Distance(2.1))
             ));
         }});
 
