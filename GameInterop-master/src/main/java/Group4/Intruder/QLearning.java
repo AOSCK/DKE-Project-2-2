@@ -23,6 +23,7 @@ public class QLearning extends Agent {
     static int maximumMovesBeforeThresholdChange = 50;
 
 
+
     public AMove Qlearning(ArrayList<AMove> moves){
         //first check, if there are many moves made. If there are too many moves done, increase the chance of doing a random move.
         //This is useful when we need to teleport to get to the right room. With a higher chance of doing random moves,
@@ -156,32 +157,32 @@ public class QLearning extends Agent {
 //
 //    }
 
-    public static void moveExplorer(double x, double y,QLearning q){
-        String mapD = System.getProperty("user.dir")+System.getProperty("file.separator")+"src"+System.getProperty("file.separator")+"GameControllerSample"+System.getProperty("file.separator")+"testmap.txt";
-        String gameFileD = System.getProperty("user.dir")+System.getProperty("file.separator")+"src"+System.getProperty("file.separator")+"GameControllerSample"+System.getProperty("file.separator")+"gamefile.txt";
-        Scenario scenario = new Scenario(mapD);
-        double[][] guardPositions = new double[scenario.getNumGuards()][4];
-        int[] guardStates = new int[scenario.getNumGuards()];
-        //System.out.println(scenario.getGameFile().toString());
-        try{
-            //System.out.println("working");
-            FileWriter write = new FileWriter(gameFileD,false);
-            PrintWriter prtln = new PrintWriter(write);
-            prtln.println("signal = 1"); // semaphore code   0-> game controller, 1-> guards, 2-> intruder
-            prtln.println("scenario = " + scenario.getMapDoc());
-            for(int i=0;i<scenario.getNumGuards();i++){
-                prtln.println("guard test = "+String.valueOf(i)+" "+String.valueOf(guardStates[i])+" "+String.valueOf(guardPositions[i][0])+" "+String.valueOf(guardPositions[i][1])+" "+String.valueOf(guardPositions[i][2])+" "+String.valueOf(guardPositions[i][3]));
-            }
-            prtln.println("explorer = " + x + " " + y);
-            prtln.close();
-        }
-        catch(Exception e){
-            System.out.println("failed");
-            // we ar in trouble
-        }
-        q.setCurrentLocation(x,y);
-        System.out.println("agent moved " + x + " " + y);
-    }
+//    public static void moveExplorer(double x, double y,QLearning q){
+//        String mapD = System.getProperty("user.dir")+System.getProperty("file.separator")+"src"+System.getProperty("file.separator")+"GameControllerSample"+System.getProperty("file.separator")+"testmap.txt";
+//        String gameFileD = System.getProperty("user.dir")+System.getProperty("file.separator")+"src"+System.getProperty("file.separator")+"GameControllerSample"+System.getProperty("file.separator")+"gamefile.txt";
+//        Scenario scenario = new Scenario(mapD);
+//        double[][] guardPositions = new double[scenario.getNumGuards()][4];
+//        int[] guardStates = new int[scenario.getNumGuards()];
+//        //System.out.println(scenario.getGameFile().toString());
+//        try{
+//            //System.out.println("working");
+//            FileWriter write = new FileWriter(gameFileD,false);
+//            PrintWriter prtln = new PrintWriter(write);
+//            prtln.println("signal = 1"); // semaphore code   0-> game controller, 1-> guards, 2-> intruder
+//            prtln.println("scenario = " + scenario.getMapDoc());
+//            for(int i=0;i<scenario.getNumGuards();i++){
+//                prtln.println("guard test = "+String.valueOf(i)+" "+String.valueOf(guardStates[i])+" "+String.valueOf(guardPositions[i][0])+" "+String.valueOf(guardPositions[i][1])+" "+String.valueOf(guardPositions[i][2])+" "+String.valueOf(guardPositions[i][3]));
+//            }
+//            prtln.println("explorer = " + x + " " + y);
+//            prtln.close();
+//        }
+//        catch(Exception e){
+//            System.out.println("failed");
+//            // we ar in trouble
+//        }
+//        q.setCurrentLocation(x,y);
+//        System.out.println("agent moved " + x + " " + y);
+//    }
 
 //    public static double[] checkTeleport(QLearning q){
 //        System.out.println("checking portals");

@@ -3,17 +3,38 @@ package Group4.Intruder;
 import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
+import java.util.List;
+
 import Group4.OurInterop.*;
+import Group9.map.objects.MapObject;
+import Group9.math.Vector2;
 import Interop.Action.*;
 import Interop.*;
 import Interop.Percept.*;
 import Interop.Geometry.*;
 import Interop.Agent.*;
+import Interop.Percept.Vision.ObjectPerceptType;
 import Interop.Utils.*;
+import Group9.map.*;
+import Group9.map.area.*;
+import Group9.map.dynamic.*;
+import Group9.map.objects.*;
+import Group9.tree.*;
+import Group9.math.*;
 
 public class ActionsManager {
 
-    public static ArrayList<AMove> AgetAllMoves(double my_x, double my_y){
+
+    List<MapObject> mapObjects;
+    List<MapObject> walls;
+
+    public ActionsManager(List<MapObject> mapObjects) {
+        this.mapObjects = mapObjects;
+        this.walls = new ArrayList<MapObject>();
+    }
+
+
+    public ArrayList<AMove> AgetAllMoves(double my_x, double my_y){
         ArrayList movesList = new ArrayList<>();
         ArrayList MovesList = new ArrayList();
 
@@ -61,7 +82,7 @@ public class ActionsManager {
         return movesList;
     }
 
-    public static ArrayList<AMove> AradiusMoves(double my_x, double my_y){
+    private ArrayList<AMove> aRadiusMoves(double my_x, double my_y){
         double radius = 15;
         ArrayList movesList = new ArrayList<>();
         ArrayList MovesList = new ArrayList();
@@ -80,28 +101,42 @@ public class ActionsManager {
         return movesList;
     }
 
-    private static boolean checkObstaclesHit(Move move){
+    private boolean checkObstaclesHit(Move move) {
         //System.out.println("checking collision");
         boolean hit = false;
-        String mapD = System.getProperty("user.dir")+System.getProperty("file.separator")+"src"+System.getProperty("file.separator")+"GameControllerSample"+System.getProperty("file.separator")+"testmap.txt";
-        Scenario scenario = new Scenario(mapD);
+
         Point pointA = move.getDistance().getPointA();
         Point pointB = move.getDistance().getPointB();
 
-        double m = (pointA.getY()-pointB.getY())/(pointA.getX()-pointB.getX());
-        double c = (pointA.getY()-pointA.getX())*m;
+        double m = (pointA.getY() - pointB.getY()) / (pointA.getX() - pointB.getX());
+        double c = (pointA.getY() - pointA.getX()) * m;
 
-        ArrayList<Area> walls = scenario.getWalls ();
+        for (MapObject obj : mapObjects) {
+            if (obj.getType() == ObjectPerceptType.Wall) this.walls.add(obj);
+        }
         //System.out.println(walls.get(0));
         Line2D line = new Line2D.Double(pointA.getX(), pointA.getY(), pointB.getX(), pointB.getY());
         //System.out.println(line.getBounds());
-        for(Area w: walls){
-            Rectangle2D wallRect = new Rectangle2D.Double(w.getLeftBoundary(),w.getBottomBoundary(), w.getRightBoundary() -w.getLeftBoundary() +0.5, w.getTopBoundary()-w.getBottomBoundary() +0.5);
-            if(line.contains(wallRect.getBounds()) || wallRect.intersectsLine(line) || wallRect.contains(line.getBounds())){
-                //System.out.println("hit");
-                return true;
-            }
+        for (MapObject w : walls) {
+            PointContainer.Polygon wall = w.getContainer().getAsPolygon();
+            if (wall.getPoints().length == 4) {
+
+                Vector2[] corners = w.getContainer().getAsPolygon().getPoints();
+
+                double x1 = Math.min(Math.min(corners[0].getX(),corners[1].getX()),Math.min(corners[2].getX(),corners[3].getX()));
+                double x2 = Math.max(Math.max(corners[0].getX(),corners[1].getX()),Math.max(corners[2].getX(),corners[3].getX()));
+                double y1 = Math.min(Math.min(corners[0].getY(),corners[1].getY()),Math.min(corners[2].getY(),corners[3].getY()));
+                double y2 = Math.max(Math.max(corners[0].getY(),corners[1].getY()),Math.max(corners[2].getY(),corners[3].getY()));
+
+
+                Rectangle2D wallRect = new Rectangle2D.Double(x1, y1, x2 - x1, y2 - y1);
+                if (line.contains(wallRect.getBounds()) || wallRect.intersectsLine(line) || wallRect.contains(line.getBounds())) {
+                    //System.out.println("hit");
+                    return true;
+                }
+            }else{ System.out.println("This is not a rectangle, please refrain from such curveballs"); }
         }
+
         /*
         //System.out.println(hit);
         scenario.getWalls().get(0);
