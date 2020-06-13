@@ -11,6 +11,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
+import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -29,35 +30,72 @@ import Interop.Action.Move;
 import Interop.Action.Rotate;
 import Interop.Agent.Intruder;
 import Interop.Geometry.Angle;
+import Interop.Geometry.Direction;
 import Interop.Geometry.Distance;
-import Interop.Percept.IntruderPercepts;
-import Interop.Percept.Scenario.SlowDownModifiers;
-import Interop.Percept.Vision.FieldOfView;
+import Interop.Percept.*;
+import Interop.Percept.Scenario.*;
+import Interop.Percept.Smell.*;
+import Interop.Percept.Sound.*;
+import Interop.Percept.Vision.*;
 
 import static java.lang.Math.abs;
 
 public class QLearning implements Intruder{
-    static double threshold = 0.1;
-    double targetDirection = 0;
-    static int targetX = 0;
-    static int targetY = 0;
     private int numberOfMoves = 0;
-    static int maximumMovesBeforeThresholdChange = 50;
+    private int counter = 0;
+    boolean inRandomMoves = false;
+
     public File mapFile = new File("C:/Users/Me/Dropbox/Uni/Project/2-2/DKE-Project-2-2/GameInterop-master/src/main/java/Group9/map/maps/test_2.map");
     private final static Charset ENCODING = StandardCharsets.UTF_8;
     private final Path filePath = Paths.get(String.valueOf(mapFile));
-
+    static final int MAXIMUM_MOVES_BEFORE_THRESHOLD_CHANGE = 500;
 
     @Override
     public IntruderAction getAction(IntruderPercepts percepts) {
-        if(!percepts.wasLastActionExecuted())
-        {
-            return new Rotate(Angle.fromRadians(percepts.getScenarioIntruderPercepts().getScenarioPercepts().getMaxRotationAngle().getRadians() * Game._RANDOM.nextDouble()));
+        double rand = Math.random();
+        if (counter > MAXIMUM_MOVES_BEFORE_THRESHOLD_CHANGE) {
+            inRandomMoves = true;
         }
-        else
-        {
-            return new Move(new Distance(percepts.getScenarioIntruderPercepts().getMaxMoveDistanceIntruder().getValue() * getSpeedModifier(percepts)));
+        for(ObjectPercept obj : percepts.getVision().getObjects().getAll()){
+            if(obj.getType() == ObjectPerceptType.TargetArea){
+                if (abs(percepts.getTargetDirection().getDegrees()) < 7.5) {
+                    counter++;
+                    return new Move(new Distance(percepts.getScenarioIntruderPercepts().getMaxMoveDistanceIntruder().getValue() * getSpeedModifier(percepts)));
+                } else {
+                    counter++;
+                    return new Rotate(percepts.getTargetDirection());
+                }
+            }
         }
+            if (!inRandomMoves) {
+
+                if (!percepts.wasLastActionExecuted()) {
+                    counter++;
+                    return new Rotate(Angle.fromRadians(percepts.getScenarioIntruderPercepts().getScenarioPercepts().getMaxRotationAngle().getRadians() * Game._RANDOM.nextDouble()));
+                } else {
+                    if (abs(percepts.getTargetDirection().getDegrees()) < 7.5) {
+                        counter++;
+                        return new Move(new Distance(percepts.getScenarioIntruderPercepts().getMaxMoveDistanceIntruder().getValue() * getSpeedModifier(percepts)));
+                    } else {
+                        counter++;
+                        return new Rotate(percepts.getTargetDirection());
+                    }
+                }
+            }else{
+                counter--;
+                if(counter == 0){
+                    inRandomMoves = false;
+                }
+                if(!percepts.wasLastActionExecuted())
+                {
+                    return new Rotate(Angle.fromRadians(percepts.getScenarioIntruderPercepts().getScenarioPercepts().getMaxRotationAngle().getRadians() * Game._RANDOM.nextDouble()));
+                }
+                else
+                {
+                    return new Move(new Distance(percepts.getScenarioIntruderPercepts().getMaxMoveDistanceIntruder().getValue() * getSpeedModifier(percepts)));
+                }
+
+            }
     }
 
     private double getSpeedModifier(IntruderPercepts guardPercepts)
@@ -80,35 +118,35 @@ public class QLearning implements Intruder{
     }
 
 
-    public void readMap(){
-        try (Scanner scanner = new Scanner(filePath, ENCODING.name())){
-            while (scanner.hasNextLine()){
-                parseLine(scanner.nextLine());
-            }
-        }
+//    public void readMap(){
+//        try (Scanner scanner = new Scanner(filePath, ENCODING.name())){
+//            while (scanner.hasNextLine()){
+//                parseLine(scanner.nextLine());
+//            }
+//        }
+//
+//        catch(Exception e){
+//
+//        }
+//    }
 
-        catch(Exception e){
-
-        }
-    }
-
-    protected void parseLine(String line){
-        try(Scanner scanner = new Scanner(line)){
-            scanner.useDelimiter("=");
-            if(scanner.hasNext()){
-                String id = scanner.next();
-                String value = scanner.next();
-                value = value.trim();
-                id = id.trim();
-                String[] items = value.split(" ");
-                switch(id){
-                    case "targetArea":
-                        targetX = Integer.parseInt(items[0]);
-                        targetY = Integer.parseInt(items[1]);
-                }
-            }
-        }
-    }
+//    protected void parseLine(String line){
+//        try(Scanner scanner = new Scanner(line)){
+//            scanner.useDelimiter("=");
+//            if(scanner.hasNext()){
+//                String id = scanner.next();
+//                String value = scanner.next();
+//                value = value.trim();
+//                id = id.trim();
+//                String[] items = value.split(" ");
+//                switch(id){
+//                    case "targetArea":
+//                        targetX = Integer.parseInt(items[0]);
+//                        targetY = Integer.parseInt(items[1]);
+//                }
+//            }
+//        }
+//    }
 
 
 /*
@@ -158,56 +196,56 @@ public class QLearning implements Intruder{
 */
 
 
-    public double evaluateMove(AMove m, double targetDirection) {
-        double absoluteError;
-        double movingDirection;
-        double xVector = getCurrentXLocation() - m.getX();
-        double yVector = getCurrentYLocation() - m.getY();
-        if (yVector == 0) {
-            if (xVector > 0) {
-                movingDirection = 0;
-            } else {
-                movingDirection = 180;
-            }
-        } else if (xVector == 0) {
-            if (yVector > 0) {
-                movingDirection = 90;
-            } else {
-                movingDirection = 270;
-            }
-        } else {
-            movingDirection = Math.toDegrees(Math.atan(yVector / xVector));
-        }
-        absoluteError = abs(targetDirection - movingDirection);
-
-        return absoluteError;
-
-    }
-
-    public void updateDirection(){
-        double xVector = targetX - getCurrentXLocation();
-        double yVector = targetY - getCurrentYLocation();
-
-        if (yVector == 0) {
-            if (xVector > 0) {
-                this.targetDirection = 0;
-            } else {
-                this.targetDirection = 180;
-            }
-        } else if (xVector == 0) {
-            if (yVector > 0) {
-                this.targetDirection = 90;
-            } else {
-                this.targetDirection = 270;
-            }
-        } else {
-
-            this.targetDirection = Math.toDegrees(Math.atan(yVector / xVector));
-        }
-    }
-
-    static double x = 1;
-    static double y = 1;
+//    public double evaluateMove(AMove m, Direction targetDirection) {
+//        double absoluteError;
+//        double movingDirection;
+//        double xVector = getCurrentXLocation() - m.getX();
+//        double yVector = getCurrentYLocation() - m.getY();
+//        if (yVector == 0) {
+//            if (xVector > 0) {
+//                movingDirection = 0;
+//            } else {
+//                movingDirection = 180;
+//            }
+//        } else if (xVector == 0) {
+//            if (yVector > 0) {
+//                movingDirection = 90;
+//            } else {
+//                movingDirection = 270;
+//            }
+//        } else {
+//            movingDirection = Math.atan(yVector / xVector);
+//        }
+//        absoluteError = abs(targetDirection);
+//
+//        return absoluteError;
+//
+//    }
+//
+//    public void updateDirection(){
+//        double xVector = targetX - getCurrentXLocation();
+//        double yVector = targetY - getCurrentYLocation();
+//
+//        if (yVector == 0) {
+//            if (xVector > 0) {
+//                this.targetDirection = 0;
+//            } else {
+//                this.targetDirection = 180;
+//            }
+//        } else if (xVector == 0) {
+//            if (yVector > 0) {
+//                this.targetDirection = 90;
+//            } else {
+//                this.targetDirection = 270;
+//            }
+//        } else {
+//
+//            this.targetDirection = Math.toDegrees(Math.atan(yVector / xVector));
+//        }
+//    }
+//
+//    static double x = 1;
+//    static double y = 1;
 
 
 
