@@ -1,30 +1,118 @@
 package Group4.Intruder;
 
 import java.awt.geom.Rectangle2D;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.Scanner;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import Group4.Agent;
 import Group4.OurInterop.*;
+import Group9.Game;
+import Group9.agent.container.GuardContainer;
+import Group9.agent.container.IntruderContainer;
+import Group9.math.Vector2;
+import Group9.tree.PointContainer;
+import Group9.agent.container.AgentContainer;
+import Group9.agent.container.IntruderContainer;
+import Interop.Action.IntruderAction;
+import Interop.Action.Move;
+import Interop.Action.Rotate;
+import Interop.Agent.Intruder;
+import Interop.Geometry.Angle;
+import Interop.Geometry.Distance;
+import Interop.Percept.IntruderPercepts;
+import Interop.Percept.Scenario.SlowDownModifiers;
+import Interop.Percept.Vision.FieldOfView;
 
 import static java.lang.Math.abs;
 
-public class QLearning extends Agent {
+public class QLearning implements Intruder{
     static double threshold = 0.1;
     double targetDirection = 0;
     static int targetX = 0;
     static int targetY = 0;
     private int numberOfMoves = 0;
     static int maximumMovesBeforeThresholdChange = 50;
+    public File mapFile = new File("C:\\Users\\Mark\\Documents\\Year 2 second half\\Project 2.2\\DKE-Project-2-2\\GameInterop-master\\src\\main\\java\\Group9\\map\\maps\\test_2.map");
+    private final static Charset ENCODING = StandardCharsets.UTF_8;
+    private final Path filePath = Paths.get(String.valueOf(mapFile));
 
 
+    @Override
+    public IntruderAction getAction(IntruderPercepts percepts) {
+        if(!percepts.wasLastActionExecuted())
+        {
+            return new Rotate(Angle.fromRadians(percepts.getScenarioIntruderPercepts().getScenarioPercepts().getMaxRotationAngle().getRadians() * Game._RANDOM.nextDouble()));
+        }
+        else
+        {
+            return new Move(new Distance(percepts.getScenarioIntruderPercepts().getMaxMoveDistanceIntruder().getValue() * getSpeedModifier(percepts)));
+        }
+    }
 
-    public AMove Qlearning(ArrayList<AMove> moves){
+    private double getSpeedModifier(IntruderPercepts guardPercepts)
+    {
+        SlowDownModifiers slowDownModifiers =  guardPercepts.getScenarioIntruderPercepts().getScenarioPercepts().getSlowDownModifiers();
+        if(guardPercepts.getAreaPercepts().isInWindow())
+        {
+            return slowDownModifiers.getInWindow();
+        }
+        else if(guardPercepts.getAreaPercepts().isInSentryTower())
+        {
+            return slowDownModifiers.getInSentryTower();
+        }
+        else if(guardPercepts.getAreaPercepts().isInDoor())
+        {
+            return slowDownModifiers.getInDoor();
+        }
+
+        return 1;
+    }
+
+
+    public void readMap(){
+        try (Scanner scanner = new Scanner(filePath, ENCODING.name())){
+            while (scanner.hasNextLine()){
+                parseLine(scanner.nextLine());
+            }
+        }
+
+        catch(Exception e){
+
+        }
+    }
+
+    protected void parseLine(String line){
+        try(Scanner scanner = new Scanner(line)){
+            scanner.useDelimiter("=");
+            if(scanner.hasNext()){
+                String id = scanner.next();
+                String value = scanner.next();
+                value = value.trim();
+                id = id.trim();
+                String[] items = value.split(" ");
+                switch(id){
+                    case "targetArea":
+                        targetX = Integer.parseInt(items[0]);
+                        targetY = Integer.parseInt(items[1]);
+                }
+            }
+        }
+    }
+
+
+/*
+    public AMove Qlearning(ArrayList<AMove> moves, IntruderContainer agent){
         //first check, if there are many moves made. If there are too many moves done, increase the chance of doing a random move.
         //This is useful when we need to teleport to get to the right room. With a higher chance of doing random moves,
         //we increase the chance of finding the teleport
@@ -119,6 +207,8 @@ public class QLearning extends Agent {
 
     static double x = 1;
     static double y = 1;
+
+ */
 
 //    public static void main(String[] args){
 //        QLearning q = new QLearning();
