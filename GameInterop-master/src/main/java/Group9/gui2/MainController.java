@@ -29,7 +29,7 @@ public class MainController implements Runnable {
     private AnimationTimer animator;
     private final boolean generateHistory;
 
-    public MainController(Gui gui, File mapFile,boolean generateHistory){
+    public MainController(Gui gui, File mapFile, boolean generateHistory){
         this.gui = gui;
         this.generateHistory = generateHistory;
         game = new Game(Parser.parseFile(mapFile.getAbsolutePath()), new DefaultAgentFactory(), false, 15, new Callback<Game>() {

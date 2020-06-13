@@ -25,33 +25,36 @@ import Group9.math.*;
 public class ActionsManager {
 
 
-    List<MapObject> mapObjects;
-    List<MapObject> walls;
+    private List<MapObject> portals;
+    private List<MapObject> mapObjects;
+    private List<MapObject> walls;
 
     public ActionsManager(List<MapObject> mapObjects) {
         this.mapObjects = mapObjects;
         this.walls = new ArrayList<MapObject>();
+        this.portals = new ArrayList<>();
     }
 
 
-    public ArrayList<AMove> AgetAllMoves(double my_x, double my_y){
+    public ArrayList<AMove> getAllMoves(PointContainer.Circle circle){
         ArrayList movesList = new ArrayList<>();
         ArrayList MovesList = new ArrayList();
+        Vector2 circCenter = circle.getCenter();
 
         //////////////////////AMove actions /////////////////////////////
 
         ///--AMove along x--
         for(int x = 0; x<100; x++){
-            Move m = new Move(new Distance(new Point(my_x,my_y),new Point(my_x+x,my_y)));
+            Move m = new Move(new Distance(new Point(circCenter.getX(),circCenter.getY()),new Point(circCenter.getX()+x,circCenter.getY())));
             MovesList.add(m);
-            AMove f_m = new AMove(my_x+x,my_y);
+            AMove f_m = new AMove(circCenter.getX()+x,circCenter.getY());
             movesList.add(f_m);
         }
         ///--AMove along x--
         for(int y = 0; y<100; y++){
-            Move m = new Move(new Distance(new Point(my_x,my_y),new Point(my_x,my_y+y)));
+            Move m = new Move(new Distance(new Point(circCenter.getX(),circCenter.getY()),new Point(circCenter.getX(),circCenter.getY()+y)));
             MovesList.add(m);
-            AMove f_m = new AMove(my_x,my_y+y);
+            AMove f_m = new AMove(circCenter.getX(),circCenter.getY()+y);
             movesList.add(f_m);
         }
 
@@ -71,9 +74,9 @@ public class ActionsManager {
             init = init + r;
             Angle a = new Angle(init);
             for (int n = 0; n < 100; n++) {
-                Move m = new Move(new Distance(new Point(my_x, my_y), new Point(my_x + (n * Math.cos(init)), my_y)));
+                Move m = new Move(new Distance(new Point(circCenter.getX(), circCenter.getY()), new Point(circCenter.getX() + (n * Math.cos(init)), circCenter.getY())));
                 MovesList.add(m);
-                AMove f_m = new AMove(my_x + (n * Math.cos(init)), my_y);
+                AMove f_m = new AMove(circCenter.getX() + (n * Math.cos(init)), circCenter.getY());
                 movesList.add(f_m);
             }
         }
@@ -82,14 +85,15 @@ public class ActionsManager {
         return movesList;
     }
 
-    private ArrayList<AMove> aRadiusMoves(double my_x, double my_y){
-        double radius = 15;
+    private ArrayList<AMove> aRadiusMoves(PointContainer.Circle circle){
+        double radius = circle.getRadius();
+        Vector2 circCenter = circle.getCenter();
         ArrayList movesList = new ArrayList<>();
         ArrayList MovesList = new ArrayList();
-        for(double x = my_x-radius; x<my_x+radius; x++){
-            for(double y = my_y-radius; y<my_y+radius; y++){
+        for(double x = circCenter.getX()-radius; x<circCenter.getX()+radius; x++){
+            for(double y = circCenter.getY()-radius; y<circCenter.getY()+radius; y++){
                 if(x>0 && y>0 && x<=120 && y<=80){
-                    Move m = new Move(new Distance(new Point(my_x,my_y),new Point(x,y)));
+                    Move m = new Move(new Distance(new Point(circCenter.getX(),circCenter.getY()),new Point(x,y)));
                     if(!checkObstaclesHit(m)){
                         MovesList.add(m);
                         AMove f_m = new AMove(x,y);
@@ -134,7 +138,9 @@ public class ActionsManager {
                     //System.out.println("hit");
                     return true;
                 }
-            }else{ System.out.println("This is not a rectangle, please refrain from such curveballs"); }
+            }else{
+                System.out.println("This is not a rectangle, please refrain from such curveballs");
+            }
         }
 
         /*

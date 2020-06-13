@@ -19,7 +19,7 @@ public class QLearning extends Agent {
     double targetDirection = 0;
     static int targetX = 0;
     static int targetY = 0;
-    static int numberOfMoves = 0;
+    private int numberOfMoves = 0;
     static int maximumMovesBeforeThresholdChange = 50;
 
 

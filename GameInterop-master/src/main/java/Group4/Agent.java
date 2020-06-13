@@ -11,7 +11,8 @@ import Interop.Utils.*;
 import Interop.Percept.Vision.*;
 import Group4.OurInterop.*;
 
-public class Agent {  private static ArrayList<Agent> allAgents;
+public class Agent {
+    private static ArrayList<Agent> allAgents;
     private int ID;
     private static int lastID = 0;
     private double currentXLocation;
