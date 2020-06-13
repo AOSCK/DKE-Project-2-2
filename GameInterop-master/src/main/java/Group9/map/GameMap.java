@@ -40,7 +40,6 @@ public class GameMap {
     {
         this.gameSettings = gameSettings;
         this.mapObjects = mapObjects;
-
         this.rayConstant = this.calculateRayConstant();
     }
 

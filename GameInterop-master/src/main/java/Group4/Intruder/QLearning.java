@@ -43,7 +43,7 @@ public class QLearning implements Intruder{
     static int targetY = 0;
     private int numberOfMoves = 0;
     static int maximumMovesBeforeThresholdChange = 50;
-    public File mapFile = new File("C:\\Users\\Mark\\Documents\\Year 2 second half\\Project 2.2\\DKE-Project-2-2\\GameInterop-master\\src\\main\\java\\Group9\\map\\maps\\test_2.map");
+    public File mapFile = new File("C:/Users/Me/Dropbox/Uni/Project/2-2/DKE-Project-2-2/GameInterop-master/src/main/java/Group9/map/maps/test_2.map");
     private final static Charset ENCODING = StandardCharsets.UTF_8;
     private final Path filePath = Paths.get(String.valueOf(mapFile));
 
@@ -155,6 +155,7 @@ public class QLearning implements Intruder{
         }
 
     }
+*/
 
 
     public double evaluateMove(AMove m, double targetDirection) {
@@ -208,7 +209,7 @@ public class QLearning implements Intruder{
     static double x = 1;
     static double y = 1;
 
- */
+
 
 //    public static void main(String[] args){
 //        QLearning q = new QLearning();
@@ -296,8 +297,5 @@ public class QLearning implements Intruder{
 //        return new double[]{-1,-1,-1};
 //    }
 
-    public void setTargetLocation(int x, int y){
-        this.targetX = x;
-        this.targetY = y;
-    }
+
 }
