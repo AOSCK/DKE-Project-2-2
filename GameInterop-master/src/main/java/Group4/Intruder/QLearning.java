@@ -83,11 +83,11 @@ public class QLearning implements Intruder{
                     counter++;
                     return new Rotate(Angle.fromRadians(percepts.getScenarioIntruderPercepts().getScenarioPercepts().getMaxRotationAngle().getRadians() * Game._RANDOM.nextDouble()));
                 } else {
-                    if (abs(percepts.getTargetDirection().getDegrees()) < 7.5) {
-                        counter++;
+                    if (abs(percepts.getTargetDirection().getDegrees()) < 0.1) {
+                        counter = counter + 10;
                         return new Move(new Distance(percepts.getScenarioIntruderPercepts().getMaxMoveDistanceIntruder().getValue() * getSpeedModifier(percepts)));
                     } else {
-                        counter++;
+                        counter = counter + 10;
                         return new Rotate(percepts.getTargetDirection());
                     }
                 }
