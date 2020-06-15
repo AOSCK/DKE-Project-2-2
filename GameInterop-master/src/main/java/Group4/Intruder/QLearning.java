@@ -45,7 +45,7 @@ public class QLearning implements Intruder{
     private int counter = 0;
     boolean inRandomMoves = false;
 
-    public File mapFile = new File("C:/Users/Me/Dropbox/Uni/Project/2-2/DKE-Project-2-2/GameInterop-master/src/main/java/Group9/map/maps/test_2.map");
+    public File mapFile = new File("C:\\Users\\niels\\Documents\\Year 2 second half\\Project2.2final\\DKE-Project-2-2\\GameInterop-master\\src\\main\\java\\Group9\\map\\maps\\test_2.map");
     private final static Charset ENCODING = StandardCharsets.UTF_8;
     private final Path filePath = Paths.get(String.valueOf(mapFile));
     static final int MAXIMUM_MOVES_BEFORE_THRESHOLD_CHANGE = 500;
@@ -58,7 +58,8 @@ public class QLearning implements Intruder{
         }
         for(ObjectPercept obj : percepts.getVision().getObjects().getAll()){
             if(obj.getType() == ObjectPerceptType.TargetArea){
-                if (abs(percepts.getTargetDirection().getDegrees()) < 7.5) {
+                //Change this to 0.1, otherwise we might constantly just be missing the target
+                if (abs(percepts.getTargetDirection().getDegrees()) < 0.1) {
                     counter++;
                     return new Move(new Distance(percepts.getScenarioIntruderPercepts().getMaxMoveDistanceIntruder().getValue() * getSpeedModifier(percepts)));
                 } else {
@@ -66,6 +67,15 @@ public class QLearning implements Intruder{
                     return new Rotate(percepts.getTargetDirection());
                 }
             }
+            if(obj.getType() == ObjectPerceptType.TargetArea)
+                if (abs(obj.getPoint().getClockDirection().getDegrees()) < 0.1) {
+                    return new Move(new Distance(percepts.getScenarioIntruderPercepts().getMaxMoveDistanceIntruder().getValue() * getSpeedModifier(percepts)));
+                }
+                else{
+                    return new Rotate(obj.getPoint().getClockDirection());
+                    }
+
+
         }
             if (!inRandomMoves) {
 
