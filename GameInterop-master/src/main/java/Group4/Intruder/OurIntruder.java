@@ -86,6 +86,10 @@ public class OurIntruder implements Intruder{
                 }
             }
 
+            if(obj.getType() == ObjectPerceptType.Guard){
+                return new Rotate(new Angle(Math.PI));
+            }
+
             if(obj.getType() == ObjectPerceptType.Teleport) {
 //                System.out.println("i see teleport");
                 if (obj.getPoint().getClockDirection().getDegrees() < error || 360 - obj.getPoint().getClockDirection().getDegrees() < error) {
