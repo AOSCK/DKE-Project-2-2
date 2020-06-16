@@ -20,10 +20,13 @@ import Interop.Percept.Smell.SmellPerceptType;
 import Interop.Percept.Smell.SmellPercept;
 import Interop.Percept.Vision.ObjectPercept;
 import Interop.Percept.Vision.ObjectPerceptType;
+import Interop.Geometry.Point;
 
 public class FollowGuard implements Guard{
     private double error = 7.5;
     boolean sawintruder = false;
+    boolean positioning = false;
+    double totalAngle;
     Distance oldSmellDist = null;
 
     public FollowGuard() {}
@@ -46,6 +49,32 @@ public class FollowGuard implements Guard{
                         //System.out.println("Rotating: " + (Math.toDegrees(obj.getPoint().getClockDirection().getRadians())));
                         return new Rotate(new Angle(-1 * (obj.getPoint().getClockDirection().getRadians())));
                     }
+                }
+            }
+            if (obj.getType() == ObjectPerceptType.TargetArea) {
+                positioning = true;
+            } else if (positioning) {
+                if (new Distance(obj.getPoint(), new Point(0.0, 0.0)).getValue() > 0.5) {
+                    if (obj.getPoint().getClockDirection().getDegrees() < error || 360 - obj.getPoint().getClockDirection().getDegrees() < error) {
+                        return new Move(new Distance(percepts.getScenarioGuardPercepts().getMaxMoveDistanceGuard().getValue()));
+                    }
+                    if (obj.getPoint().getClockDirection().getDegrees() > 180) {
+                        return new Rotate(new Angle(-1 * (obj.getPoint().getClockDirection().getRadians() - 2 * Math.PI)));
+                    } else {
+                        return new Rotate(new Angle(-1 * (obj.getPoint().getClockDirection().getRadians())));
+                    }
+                } else if (new Distance(obj.getPoint(), new Point(0.0, 0.0)).getValue() < 0.5) {
+                    totalAngle = obj.getPoint().getClockDirection().getRadians();
+                    if (totalAngle > percepts.getScenarioGuardPercepts().getScenarioPercepts().getMaxRotationAngle().getRadians()) {
+                        totalAngle = totalAngle - percepts.getScenarioGuardPercepts().getScenarioPercepts().getMaxRotationAngle().getRadians();
+                        return new Rotate(percepts.getScenarioGuardPercepts().getScenarioPercepts().getMaxRotationAngle());
+                    } else {
+                        return new Rotate(obj.getPoint().getClockDirection());
+                    }
+                } else if (totalAngle == 0) {
+                    positioning = false;
+                    totalAngle = Math.PI / 2;
+                    return new Move(new Distance(10));
                 }
             }
         }
