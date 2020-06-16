@@ -96,9 +96,9 @@ public class PatrolGuard implements Guard{
                         return new Move(new Distance(percepts.getScenarioGuardPercepts().getMaxMoveDistanceGuard().getValue()));
                     }
                     if (obj.getPoint().getClockDirection().getDegrees() > 180) {
-                        return new Rotate(new Angle(-1 * (obj.getPoint().getClockDirection().getRadians() - 2 * Math.PI)));
+                        return new Rotate(Angle.fromRadians(-1 * (obj.getPoint().getClockDirection().getRadians() - 2 * Math.PI)));
                     } else {
-                        return new Rotate(new Angle(-1 * (obj.getPoint().getClockDirection().getRadians())));
+                        return new Rotate(Angle.fromRadians(-1 * (obj.getPoint().getClockDirection().getRadians())));
                     }
                 } else if (new Distance(obj.getPoint(), new Point(0.0, 0.0)).getValue() < 0.5) {
                     totalAngle = obj.getPoint().getClockDirection().getRadians();
@@ -122,7 +122,7 @@ public class PatrolGuard implements Guard{
                     } else {
                         totalAngle = 0;
                         counter++;
-                        return new Rotate(new Angle(totalAngle));
+                        return new Rotate(Angle.fromRadians(totalAngle));
                     }
                 }
                 totalAngle = Math.PI;
