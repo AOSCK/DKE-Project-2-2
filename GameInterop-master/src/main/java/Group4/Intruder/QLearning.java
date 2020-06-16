@@ -67,16 +67,16 @@ public class QLearning implements Intruder{
         }
         for(ObjectPercept obj : percepts.getVision().getObjects().getAll()){
             if(obj.getType() == ObjectPerceptType.TargetArea){
-                System.out.println("I see the target!");
+//                System.out.println("I see the target!");
                 //Change this to 0.1, otherwise we might constantly just be missing the target
                 if (percepts.getTargetDirection().getDegrees() < error || 360 - percepts.getTargetDirection().getDegrees()<error) {
                     counter++;
-                    System.out.println("Move towards target performed");
+//                    System.out.println("Move towards target performed");
                     return new Move(new Distance(percepts.getScenarioIntruderPercepts().getMaxMoveDistanceIntruder().getValue() * getSpeedModifier(percepts)));
                 } else {
                     counter++;
-                    System.out.println("Rotation");
-                    System.out.println("degrees to rotate: " + percepts.getTargetDirection().getDegrees());
+//                    System.out.println("Rotation");
+//                    System.out.println("degrees to rotate: " + percepts.getTargetDirection().getDegrees());
                     if (percepts.getTargetDirection().getDegrees()> 180){
                         return new Rotate(new Angle(percepts.getTargetDirection().getRadians()-2*Math.PI));
                     }
@@ -87,17 +87,17 @@ public class QLearning implements Intruder{
             }
 
             if(obj.getType() == ObjectPerceptType.Teleport) {
-                System.out.println("i see teleport");
+//                System.out.println("i see teleport");
                 if (obj.getPoint().getClockDirection().getDegrees() < error || 360 - obj.getPoint().getClockDirection().getDegrees() < error) {
                     return new Move(new Distance(percepts.getScenarioIntruderPercepts().getMaxMoveDistanceIntruder().getValue() * getSpeedModifier(percepts)));
                 } else {
-                    System.out.println("Degrees towards target: " + obj.getPoint().getClockDirection().getDegrees());
+//                    System.out.println("Degrees towards target: " + obj.getPoint().getClockDirection().getDegrees());
                     if (obj.getPoint().getClockDirection().getDegrees() > 180){
-                        System.out.println("Rotating: " + (Math.toDegrees(obj.getPoint().getClockDirection().getRadians()-2*Math.PI)));
+//                        System.out.println("Rotating: " + (Math.toDegrees(obj.getPoint().getClockDirection().getRadians()-2*Math.PI)));
                         return new Rotate(new Angle(-1* (obj.getPoint().getClockDirection().getRadians()-2*Math.PI)));
                     }
                     else {
-                        System.out.println("Rotating: " + (Math.toDegrees(obj.getPoint().getClockDirection().getRadians())));
+//                        System.out.println("Rotating: " + (Math.toDegrees(obj.getPoint().getClockDirection().getRadians())));
                         return new Rotate(new Angle(-1 * (obj.getPoint().getClockDirection().getRadians())));
                     }
                 }

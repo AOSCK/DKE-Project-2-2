@@ -1,5 +1,6 @@
 package Group4;
 
+import Group4.Guards.PatrolGuard;
 import Group4.Intruder.QLearning;
 import Group9.agent.RandomAgent;
 import Interop.Agent.Guard;
@@ -33,8 +34,7 @@ public class AgentsFactory implements IAgentFactory{
         List<Guard> guards = new ArrayList<>();
         for(int i = 0; i < number; i++)
         {
-            guards.add(new RandomAgent());
-            //guards.add(new DeepSpace());
+            guards.add(new PatrolGuard());
         }
         return guards;
     }
