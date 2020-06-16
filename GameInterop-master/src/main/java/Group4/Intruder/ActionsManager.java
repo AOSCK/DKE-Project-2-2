@@ -157,7 +157,7 @@ public class ActionsManager {
 
     }
 
-//    public static boolean checkTeleports(QLearning a){
+//    public static boolean checkTeleports(OurIntruder a){
 //        System.out.println("checking portals");
 //        double x = a.getCurrentLocation().getX();
 //        double y = a.getCurrentLocation().getY();
@@ -172,7 +172,7 @@ public class ActionsManager {
 //            if(p.contains(x,y)){
 //                System.out.println("in portal");
 //                a.setCurrentLocation(p.getNewLocation()[0],p.getNewLocation()[1]);
-//                QLearning.moveExplorer(p.getNewLocation()[0],p.getNewLocation()[1],a);
+//                OurIntruder.moveExplorer(p.getNewLocation()[0],p.getNewLocation()[1],a);
 //                return true;
 //            }
 //        }

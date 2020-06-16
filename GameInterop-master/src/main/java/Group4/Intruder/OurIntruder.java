@@ -40,7 +40,7 @@ import Interop.Percept.Vision.*;
 
 import static java.lang.Math.abs;
 
-public class QLearning implements Intruder{
+public class OurIntruder implements Intruder{
     private int numberOfMoves = 0;
     private int counter = 0;
     boolean inRandomMoves = false;
@@ -288,7 +288,7 @@ public class QLearning implements Intruder{
 
 
 //    public static void main(String[] args){
-//        QLearning q = new QLearning();
+//        OurIntruder q = new OurIntruder();
 //        String mapD = System.getProperty("user.dir")+System.getProperty("file.separator")+"src"+System.getProperty("file.separator")+"GameControllerSample"+System.getProperty("file.separator")+"testmap.txt";
 //        Scenario scenario = new Scenario(mapD);
 //        //System.out.println(scenario.spawnAreaIntruders.getLeftBoundary());
@@ -324,7 +324,7 @@ public class QLearning implements Intruder{
 //
 //    }
 
-//    public static void moveExplorer(double x, double y,QLearning q){
+//    public static void moveExplorer(double x, double y,OurIntruder q){
 //        String mapD = System.getProperty("user.dir")+System.getProperty("file.separator")+"src"+System.getProperty("file.separator")+"GameControllerSample"+System.getProperty("file.separator")+"testmap.txt";
 //        String gameFileD = System.getProperty("user.dir")+System.getProperty("file.separator")+"src"+System.getProperty("file.separator")+"GameControllerSample"+System.getProperty("file.separator")+"gamefile.txt";
 //        Scenario scenario = new Scenario(mapD);
@@ -351,7 +351,7 @@ public class QLearning implements Intruder{
 //        System.out.println("agent moved " + x + " " + y);
 //    }
 
-//    public static double[] checkTeleport(QLearning q){
+//    public static double[] checkTeleport(OurIntruder q){
 //        System.out.println("checking portals");
 //        String mapD = System.getProperty("user.dir")+System.getProperty("file.separator")+"src"+System.getProperty("file.separator")+"GameControllerSample"+System.getProperty("file.separator")+"testmap.txt";
 //        Scenario scenario = new Scenario(mapD);
