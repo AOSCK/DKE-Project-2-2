@@ -22,7 +22,7 @@ import java.util.List;
  */
 public class AgentsFactory implements IAgentFactory{
 
-
+    //minor change
     public List<Intruder> createIntruders(int number) {
         List<Intruder> intruders = new LinkedList<>();
         for(int i = 0; i < number; i++){
