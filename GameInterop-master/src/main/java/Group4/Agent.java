@@ -30,7 +30,7 @@ public class Agent {
     }
 
     public Agent(int currentXLocation, int currentYLocation){
-        this.view = new FieldOfView(new Distance(15), new Angle(Math.PI/6));
+        this.view = new FieldOfView(new Distance(15), Angle.fromRadians(Math.PI/6));
         this.currentXLocation = currentXLocation;
         this.currentYLocation = currentYLocation;
         this.currentLocation.setLocation(currentXLocation,currentYLocation);

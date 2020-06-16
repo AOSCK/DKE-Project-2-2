@@ -54,7 +54,7 @@ public class OurIntruder implements Intruder{
 
     @Override
     public IntruderAction getAction(IntruderPercepts percepts) {
-        //if (1==1) return new Rotate(new Angle(1*Math.PI));
+        //if (1==1) return new Rotate(Angle.fromRadians()(1*Math.PI));
 
         if(percepts.getAreaPercepts().isJustTeleported()){
             counter = 0;
@@ -78,16 +78,16 @@ public class OurIntruder implements Intruder{
 //                    System.out.println("Rotation");
 //                    System.out.println("degrees to rotate: " + percepts.getTargetDirection().getDegrees());
                     if (percepts.getTargetDirection().getDegrees()> 180){
-                        return new Rotate(new Angle(percepts.getTargetDirection().getRadians()-2*Math.PI));
+                        return new Rotate(Angle.fromRadians(percepts.getTargetDirection().getRadians()-2*Math.PI));
                     }
                     else {
-                        return new Rotate(new Angle(percepts.getTargetDirection().getRadians()));
+                        return new Rotate(Angle.fromRadians(percepts.getTargetDirection().getRadians()));
                     }
                 }
             }
 
             if(obj.getType() == ObjectPerceptType.Guard){
-                return new Rotate(new Angle(Math.PI));
+                return new Rotate(Angle.fromRadians(Math.PI));
             }
 
             if(obj.getType() == ObjectPerceptType.Teleport) {
@@ -98,11 +98,11 @@ public class OurIntruder implements Intruder{
 //                    System.out.println("Degrees towards target: " + obj.getPoint().getClockDirection().getDegrees());
                     if (obj.getPoint().getClockDirection().getDegrees() > 180){
 //                        System.out.println("Rotating: " + (Math.toDegrees(obj.getPoint().getClockDirection().getRadians()-2*Math.PI)));
-                        return new Rotate(new Angle(-1* (obj.getPoint().getClockDirection().getRadians()-2*Math.PI)));
+                        return new Rotate(Angle.fromRadians(-1* (obj.getPoint().getClockDirection().getRadians()-2*Math.PI)));
                     }
                     else {
 //                        System.out.println("Rotating: " + (Math.toDegrees(obj.getPoint().getClockDirection().getRadians())));
-                        return new Rotate(new Angle(-1 * (obj.getPoint().getClockDirection().getRadians())));
+                        return new Rotate(Angle.fromRadians(-1 * (obj.getPoint().getClockDirection().getRadians())));
                     }
                 }
             }
