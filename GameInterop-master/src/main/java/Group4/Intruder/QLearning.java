@@ -43,80 +43,121 @@ import static java.lang.Math.abs;
 public class QLearning implements Intruder{
     private int numberOfMoves = 0;
     private int counter = 0;
+    boolean justTeleported = false;
     boolean inRandomMoves = false;
-    private double error = 7.5;
+    private double error = 10;
     int x;
     int y;
-    public File mapFile = new File("C:\\Users\\Mark\\Documents\\Year 2 second half\\Project 2.2\\DKE-Project-2-2\\GameInterop-master\\src\\main\\java\\Group9\\map\\maps\\test_2.map");
+    //public File mapFile = new File("C:\\Users\\Mark\\Documents\\Year 2 second half\\Project 2.2\\DKE-Project-2-2\\GameInterop-master\\src\\main\\java\\Group9\\map\\maps\\test_2.map");
+    public File mapFile = new File("C:\\Users\\Mark\\Documents\\Year 2 second half\\Project 2.2\\DKE-Project-2-2\\GameInterop-master\\src\\main\\java\\Group4\\Maps\\mirror.map");
     private final static Charset ENCODING = StandardCharsets.UTF_8;
     private final Path filePath = Paths.get(String.valueOf(mapFile));
     static final int MAXIMUM_MOVES_BEFORE_THRESHOLD_CHANGE = 500;
 
     @Override
     public IntruderAction getAction(IntruderPercepts percepts) {
-        //if (1==1) return new Rotate(new Angle(1*Math.PI));
-
         if(percepts.getAreaPercepts().isJustTeleported()){
             counter = 0;
             inRandomMoves = false;
+            justTeleported = true;
+            System.out.println("Move 1 was performed");
+            return new Move(new Distance(4));
         }
 
         double rand = Math.random();
         if (counter > MAXIMUM_MOVES_BEFORE_THRESHOLD_CHANGE) {
             inRandomMoves = true;
         }
+
         for(ObjectPercept obj : percepts.getVision().getObjects().getAll()){
             if(obj.getType() == ObjectPerceptType.TargetArea){
-                System.out.println("I see the target!");
+                //System.out.println("I see the target!");
                 //Change this to 0.1, otherwise we might constantly just be missing the target
                 if (percepts.getTargetDirection().getDegrees() < error || 360 - percepts.getTargetDirection().getDegrees()<error) {
                     counter++;
-                    System.out.println("Move towards target performed");
+                    //System.out.println("Move towards target performed");
+                    System.out.println("Move 2 was performed");
                     return new Move(new Distance(percepts.getScenarioIntruderPercepts().getMaxMoveDistanceIntruder().getValue() * getSpeedModifier(percepts)));
                 } else {
                     counter++;
-                    System.out.println("Rotation");
-                    System.out.println("degrees to rotate: " + percepts.getTargetDirection().getDegrees());
+                    //System.out.println("Rotation");
+                   // System.out.println("degrees to rotate: " + percepts.getTargetDirection().getDegrees());
                     if (percepts.getTargetDirection().getDegrees()> 180){
+                        System.out.println("Move 3 was performed");
                         return new Rotate(new Angle(percepts.getTargetDirection().getRadians()-2*Math.PI));
                     }
                     else {
+                        System.out.println("Move 4 was performed");
                         return new Rotate(new Angle(percepts.getTargetDirection().getRadians()));
                     }
                 }
             }
-
-            if(obj.getType() == ObjectPerceptType.Teleport) {
+            System.out.println(justTeleported);
+            if(obj.getType() == ObjectPerceptType.Teleport && !justTeleported) {
                 System.out.println("i see teleport");
                 if (obj.getPoint().getClockDirection().getDegrees() < error || 360 - obj.getPoint().getClockDirection().getDegrees() < error) {
+                    System.out.println("Move 5 was performed");
                     return new Move(new Distance(percepts.getScenarioIntruderPercepts().getMaxMoveDistanceIntruder().getValue() * getSpeedModifier(percepts)));
                 } else {
-                    System.out.println("Degrees towards target: " + obj.getPoint().getClockDirection().getDegrees());
+                    //System.out.println("Degrees towards target: " + obj.getPoint().getClockDirection().getDegrees());
+                    System.out.println("Move 6 was performed");
                     if (obj.getPoint().getClockDirection().getDegrees() > 180){
-                        System.out.println("Rotating: " + (Math.toDegrees(obj.getPoint().getClockDirection().getRadians()-2*Math.PI)));
+                        //System.out.println("Rotating: " + (Math.toDegrees(obj.getPoint().getClockDirection().getRadians()-2*Math.PI)));
+                        System.out.println("Move 7 was performed");
                         return new Rotate(new Angle(-1* (obj.getPoint().getClockDirection().getRadians()-2*Math.PI)));
                     }
                     else {
-                        System.out.println("Rotating: " + (Math.toDegrees(obj.getPoint().getClockDirection().getRadians())));
+                        //System.out.println("Rotating: " + (Math.toDegrees(obj.getPoint().getClockDirection().getRadians())));
+                        System.out.println("Move 8 was performed");
                         return new Rotate(new Angle(-1 * (obj.getPoint().getClockDirection().getRadians())));
                     }
                 }
             }
-
+            if((obj.getType() == ObjectPerceptType.Teleport) && (justTeleported)) {
+                if (obj.getPoint().getClockDirection().getDegrees() < error || 360 - obj.getPoint().getClockDirection().getDegrees() < error) {
+                    System.out.println("Move 19 was performed");
+                    return new Move(new Distance(percepts.getScenarioIntruderPercepts().getMaxMoveDistanceIntruder().getValue() * getSpeedModifier(percepts)));
+                }
+                    if (obj.getPoint().getClockDirection().getDegrees() > 180) {
+                        //System.out.println("Rotating: " + (Math.toDegrees(obj.getPoint().getClockDirection().getRadians() - 2 * Math.PI)));
+                        System.out.println("Move 10 was performed");
+                        return new Rotate(new Angle(-1*(obj.getPoint().getClockDirection().getRadians()- 2 * Math.PI)));
+                    } else {
+                        //System.out.println("Rotating: " + (Math.toDegrees(obj.getPoint().getClockDirection().getRadians())));
+                        System.out.println("Move 11 was performed");
+                        return new Rotate(new Angle( -1*(obj.getPoint().getClockDirection().getRadians())));
+                        }
+                    }
         }
 
             if (!inRandomMoves) {
-
                 if (!percepts.wasLastActionExecuted()) {
                     counter++;
+                    System.out.println("Move 12 was performed");
                     return new Rotate(Angle.fromRadians(percepts.getScenarioIntruderPercepts().getScenarioPercepts().getMaxRotationAngle().getRadians() * Game._RANDOM.nextDouble()));
                 } else {
-                    if (abs(percepts.getTargetDirection().getDegrees()) < 0.1) {
+                    if (abs(percepts.getTargetDirection().getDegrees()) < 1) {
                         counter = counter + 5;
+                        System.out.println("Move 13 was performed");
                         return new Move(new Distance(percepts.getScenarioIntruderPercepts().getMaxMoveDistanceIntruder().getValue() * getSpeedModifier(percepts)));
                     } else {
                         counter = counter + 5;
-                        return new Rotate(percepts.getTargetDirection());
+                        System.out.println("Move 14 was performed");
+                        if(percepts.getTargetDirection().getRadians() > percepts.getScenarioIntruderPercepts().getScenarioPercepts().getMaxRotationAngle().getRadians() && (360 - percepts.getTargetDirection().getDegrees()) > percepts.getScenarioIntruderPercepts().getScenarioPercepts().getMaxRotationAngle().getDegrees() && percepts.getTargetDirection().getDegrees()>180){
+                            return new Rotate(new Angle(-1*percepts.getScenarioIntruderPercepts().getScenarioPercepts().getMaxRotationAngle().getRadians()));
+                        }
+                        else if(percepts.getTargetDirection().getRadians() > percepts.getScenarioIntruderPercepts().getScenarioPercepts().getMaxRotationAngle().getRadians() && percepts.getTargetDirection().getDegrees() > percepts.getScenarioIntruderPercepts().getScenarioPercepts().getMaxRotationAngle().getDegrees()&& percepts.getTargetDirection().getDegrees()<=180){
+                            return new Rotate(new Angle(percepts.getScenarioIntruderPercepts().getScenarioPercepts().getMaxRotationAngle().getRadians()));
+                        }
+                        else{
+                            if(percepts.getTargetDirection().getDegrees() > 180) {
+                                return new Rotate(new Angle(percepts.getTargetDirection().getRadians()- 2 * Math.PI));
+                            }
+                            else{
+                                return new Rotate(new Angle(percepts.getTargetDirection().getRadians()));
+                            }
+                        }
+
                     }
                 }
             }else{
@@ -126,13 +167,14 @@ public class QLearning implements Intruder{
                 }
                 if(!percepts.wasLastActionExecuted())
                 {
+                    System.out.println("Move 15 was performed");
                     return new Rotate(Angle.fromRadians(percepts.getScenarioIntruderPercepts().getScenarioPercepts().getMaxRotationAngle().getRadians() * Game._RANDOM.nextDouble()));
                 }
                 else
                 {
+                    System.out.println("Move 16 was performed");
                     return new Move(new Distance(percepts.getScenarioIntruderPercepts().getMaxMoveDistanceIntruder().getValue() * getSpeedModifier(percepts)));
                 }
-
             }
     }
 
