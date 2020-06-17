@@ -28,7 +28,7 @@ public class Percepts {
     private SmellPercepts smells;
     private AreaPercepts areaPercepts;
 
-    private boolean wasLastActionExecuted; //was the last move executed??
+    private boolean wasLastActionExecuted;
 
     protected Percepts(
         VisionPrecepts vision,

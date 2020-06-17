@@ -40,7 +40,7 @@ import Interop.Percept.Vision.*;
 
 import static java.lang.Math.abs;
 
-public class QLearning implements Intruder{
+public class OurIntruder implements Intruder{
     private int numberOfMoves = 0;
     private int counter = 0;
     boolean justTeleported = false;
@@ -48,8 +48,7 @@ public class QLearning implements Intruder{
     private double error = 10;
     int x;
     int y;
-    //public File mapFile = new File("C:\\Users\\Mark\\Documents\\Year 2 second half\\Project 2.2\\DKE-Project-2-2\\GameInterop-master\\src\\main\\java\\Group9\\map\\maps\\test_2.map");
-    public File mapFile = new File("C:\\Users\\Mark\\Documents\\Year 2 second half\\Project 2.2\\DKE-Project-2-2\\GameInterop-master\\src\\main\\java\\Group4\\Maps\\mirror.map");
+    public File mapFile = new File("C:\\Users\\Mark\\Documents\\Year 2 second half\\Project 2.2\\DKE-Project-2-2\\GameInterop-master\\src\\main\\java\\Group9\\map\\maps\\test_2.map");
     private final static Charset ENCODING = StandardCharsets.UTF_8;
     private final Path filePath = Paths.get(String.valueOf(mapFile));
     static final int MAXIMUM_MOVES_BEFORE_THRESHOLD_CHANGE = 500;

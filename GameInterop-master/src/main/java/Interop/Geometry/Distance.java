@@ -8,16 +8,12 @@ import Interop.Utils.*;
 public final class Distance {
 
     private double distance;
-    private Point pointA;
-    private Point pointB;
 
     public Distance(Point pointA, Point pointB) {
         this(Math.sqrt(
-                Math.pow(pointA.getX() - pointB.getX(), 2) +
-                        Math.pow(pointA.getY() - pointB.getY(), 2)
+            Math.pow(pointA.getX() - pointB.getX(), 2) +
+            Math.pow(pointA.getY() - pointB.getY(), 2)
         ));
-        this.pointA = pointA;
-        this.pointB = pointB;
     }
 
     public Distance(double distance) {
@@ -30,11 +26,4 @@ public final class Distance {
         return distance;
     }
 
-    public Point getPointA() {
-        return pointA;
-    }
-
-    public Point getPointB() {
-        return pointB;
-    }
 }
