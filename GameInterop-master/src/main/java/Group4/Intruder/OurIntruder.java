@@ -46,12 +46,8 @@ public class OurIntruder implements Intruder{
     boolean justTeleported = false;
     boolean inRandomMoves = false;
     private double error = 10;
-    int x;
-    int y;
-    public File mapFile = new File("C:\\Users\\Mark\\Documents\\Year 2 second half\\Project 2.2\\DKE-Project-2-2\\GameInterop-master\\src\\main\\java\\Group9\\map\\maps\\test_2.map");
     private final static Charset ENCODING = StandardCharsets.UTF_8;
-    private final Path filePath = Paths.get(String.valueOf(mapFile));
-    static final int MAXIMUM_MOVES_BEFORE_THRESHOLD_CHANGE = 500;
+    static final int MAXIMUM_MOVES_BEFORE_THRESHOLD_CHANGE = 10000;
 
     @Override
     public IntruderAction getAction(IntruderPercepts percepts) {
@@ -59,7 +55,6 @@ public class OurIntruder implements Intruder{
             counter = 0;
             inRandomMoves = false;
             justTeleported = true;
-            System.out.println("Move 1 was performed");
             return new Move(new Distance(4));
         }
 
@@ -75,55 +70,41 @@ public class OurIntruder implements Intruder{
                 if (percepts.getTargetDirection().getDegrees() < error || 360 - percepts.getTargetDirection().getDegrees()<error) {
                     counter++;
                     //System.out.println("Move towards target performed");
-                    System.out.println("Move 2 was performed");
                     return new Move(new Distance(percepts.getScenarioIntruderPercepts().getMaxMoveDistanceIntruder().getValue() * getSpeedModifier(percepts)));
                 } else {
                     counter++;
                     //System.out.println("Rotation");
                    // System.out.println("degrees to rotate: " + percepts.getTargetDirection().getDegrees());
                     if (percepts.getTargetDirection().getDegrees()> 180){
-                        System.out.println("Move 3 was performed");
                         return new Rotate(new Angle(percepts.getTargetDirection().getRadians()-2*Math.PI));
                     }
                     else {
-                        System.out.println("Move 4 was performed");
                         return new Rotate(new Angle(percepts.getTargetDirection().getRadians()));
                     }
                 }
             }
-            System.out.println(justTeleported);
             if(obj.getType() == ObjectPerceptType.Teleport && !justTeleported) {
-                System.out.println("i see teleport");
                 if (obj.getPoint().getClockDirection().getDegrees() < error || 360 - obj.getPoint().getClockDirection().getDegrees() < error) {
-                    System.out.println("Move 5 was performed");
                     return new Move(new Distance(percepts.getScenarioIntruderPercepts().getMaxMoveDistanceIntruder().getValue() * getSpeedModifier(percepts)));
                 } else {
-                    //System.out.println("Degrees towards target: " + obj.getPoint().getClockDirection().getDegrees());
-                    System.out.println("Move 6 was performed");
                     if (obj.getPoint().getClockDirection().getDegrees() > 180){
-                        //System.out.println("Rotating: " + (Math.toDegrees(obj.getPoint().getClockDirection().getRadians()-2*Math.PI)));
-                        System.out.println("Move 7 was performed");
                         return new Rotate(new Angle(-1* (obj.getPoint().getClockDirection().getRadians()-2*Math.PI)));
                     }
                     else {
                         //System.out.println("Rotating: " + (Math.toDegrees(obj.getPoint().getClockDirection().getRadians())));
-                        System.out.println("Move 8 was performed");
                         return new Rotate(new Angle(-1 * (obj.getPoint().getClockDirection().getRadians())));
                     }
                 }
             }
             if((obj.getType() == ObjectPerceptType.Teleport) && (justTeleported)) {
                 if (obj.getPoint().getClockDirection().getDegrees() < error || 360 - obj.getPoint().getClockDirection().getDegrees() < error) {
-                    System.out.println("Move 19 was performed");
                     return new Move(new Distance(percepts.getScenarioIntruderPercepts().getMaxMoveDistanceIntruder().getValue() * getSpeedModifier(percepts)));
                 }
                     if (obj.getPoint().getClockDirection().getDegrees() > 180) {
                         //System.out.println("Rotating: " + (Math.toDegrees(obj.getPoint().getClockDirection().getRadians() - 2 * Math.PI)));
-                        System.out.println("Move 10 was performed");
                         return new Rotate(new Angle(-1*(obj.getPoint().getClockDirection().getRadians()- 2 * Math.PI)));
                     } else {
                         //System.out.println("Rotating: " + (Math.toDegrees(obj.getPoint().getClockDirection().getRadians())));
-                        System.out.println("Move 11 was performed");
                         return new Rotate(new Angle( -1*(obj.getPoint().getClockDirection().getRadians())));
                         }
                     }
@@ -132,16 +113,13 @@ public class OurIntruder implements Intruder{
             if (!inRandomMoves) {
                 if (!percepts.wasLastActionExecuted()) {
                     counter++;
-                    System.out.println("Move 12 was performed");
                     return new Rotate(Angle.fromRadians(percepts.getScenarioIntruderPercepts().getScenarioPercepts().getMaxRotationAngle().getRadians() * Game._RANDOM.nextDouble()));
                 } else {
                     if (abs(percepts.getTargetDirection().getDegrees()) < 1) {
-                        counter = counter + 5;
-                        System.out.println("Move 13 was performed");
+                        counter = counter + 100;
                         return new Move(new Distance(percepts.getScenarioIntruderPercepts().getMaxMoveDistanceIntruder().getValue() * getSpeedModifier(percepts)));
                     } else {
-                        counter = counter + 5;
-                        System.out.println("Move 14 was performed");
+                        counter = counter + 100;
                         if(percepts.getTargetDirection().getRadians() > percepts.getScenarioIntruderPercepts().getScenarioPercepts().getMaxRotationAngle().getRadians() && (360 - percepts.getTargetDirection().getDegrees()) > percepts.getScenarioIntruderPercepts().getScenarioPercepts().getMaxRotationAngle().getDegrees() && percepts.getTargetDirection().getDegrees()>180){
                             return new Rotate(new Angle(-1*percepts.getScenarioIntruderPercepts().getScenarioPercepts().getMaxRotationAngle().getRadians()));
                         }
@@ -166,12 +144,10 @@ public class OurIntruder implements Intruder{
                 }
                 if(!percepts.wasLastActionExecuted())
                 {
-                    System.out.println("Move 15 was performed");
                     return new Rotate(Angle.fromRadians(percepts.getScenarioIntruderPercepts().getScenarioPercepts().getMaxRotationAngle().getRadians() * Game._RANDOM.nextDouble()));
                 }
                 else
                 {
-                    System.out.println("Move 16 was performed");
                     return new Move(new Distance(percepts.getScenarioIntruderPercepts().getMaxMoveDistanceIntruder().getValue() * getSpeedModifier(percepts)));
                 }
             }
