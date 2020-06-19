@@ -36,6 +36,7 @@ public class FollowGuard implements Guard{
 
         for(ObjectPercept obj : percepts.getVision().getObjects().getAll()) {
             if (obj.getType() == ObjectPerceptType.Intruder) {
+                positioning = false;
                 sawintruder = true;
                 if (obj.getPoint().getClockDirection().getDegrees() < error || 360 - obj.getPoint().getClockDirection().getDegrees() < error) {
                     return new Move(new Distance(percepts.getScenarioGuardPercepts().getMaxMoveDistanceGuard().getValue() * getSpeedModifier(percepts)));
@@ -96,9 +97,12 @@ public class FollowGuard implements Guard{
         }
 
         //look for intruders in the SentryTower
+        /*
         if(percepts.getAreaPercepts().isInSentryTower()){
             return  new Rotate(Angle.fromDegrees(15));
         }
+
+         */
 
         for(ObjectPercept obj : percepts.getVision().getObjects().getAll()) {
             if (obj.getType() == ObjectPerceptType.SentryTower) {

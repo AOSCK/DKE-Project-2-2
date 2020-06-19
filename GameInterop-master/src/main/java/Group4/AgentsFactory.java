@@ -1,11 +1,11 @@
 package Group4;
 
-import Group4.Guards.PatrolGuard;
 import Group4.Guards.FollowGuard;
-import Group4.Intruder.OurIntruder;
+import Group9.agent.RandomIntruderAgent;
 import Interop.Agent.Guard;
 import Interop.Agent.Intruder;
 import Group9.agent.factories.*;
+import Group9.agent.RandomAgent;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -25,7 +25,7 @@ public class AgentsFactory implements IAgentFactory{
     public List<Intruder> createIntruders(int number) {
         List<Intruder> intruders = new LinkedList<>();
         for(int i = 0; i < number; i++){
-            intruders.add(new OurIntruder());
+            intruders.add(new RandomIntruderAgent());
         }
         return intruders;
     }
@@ -33,7 +33,7 @@ public class AgentsFactory implements IAgentFactory{
         List<Guard> guards = new ArrayList<>();
         for(int i = 0; i < number; i++)
         {
-            guards.add(new FollowGuard());
+            guards.add(new RandomAgent());
         }
         return guards;
     }
