@@ -60,17 +60,17 @@ public class FollowGuard implements Guard{
                         return new Move(new Distance(percepts.getScenarioGuardPercepts().getMaxMoveDistanceGuard().getValue()));
                     }
                     if (obj.getPoint().getClockDirection().getDegrees() > 180) {
-                        return new Rotate(Angle.fromRadians(-1 * (obj.getPoint().getClockDirection().getRadians() - 2 * Math.PI)));
+                        return new Rotate(Angle.fromRadians( (obj.getPoint().getClockDirection().getRadians() - 2 * Math.PI)));
                     } else {
-                        return new Rotate(Angle.fromRadians(-1 * (obj.getPoint().getClockDirection().getRadians())));
+                        return new Rotate(Angle.fromRadians( (obj.getPoint().getClockDirection().getRadians())));
                     }
                 } else if (new Distance(obj.getPoint(), new Point(0.0, 0.0)).getValue() < 0.5) {
                     totalfromRadians = obj.getPoint().getClockDirection().getRadians();
                     if (totalfromRadians > percepts.getScenarioGuardPercepts().getScenarioPercepts().getMaxRotationAngle().getRadians()) {
                         totalfromRadians = totalfromRadians - percepts.getScenarioGuardPercepts().getScenarioPercepts().getMaxRotationAngle().getRadians();
-                        return new Rotate(percepts.getScenarioGuardPercepts().getScenarioPercepts().getMaxRotationAngle());
+                        return new Rotate(Angle.fromRadians(-1*percepts.getScenarioGuardPercepts().getScenarioPercepts().getMaxRotationAngle().getRadians()));
                     } else {
-                        return new Rotate(obj.getPoint().getClockDirection());
+                        return new Rotate(Angle.fromRadians(-1*obj.getPoint().getClockDirection().getRadians()));
                     }
                 } else if (totalfromRadians == 0) {
                     positioning = false;
