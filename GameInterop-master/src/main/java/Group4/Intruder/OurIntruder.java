@@ -76,10 +76,10 @@ public class OurIntruder implements Intruder{
                     //System.out.println("Rotation");
                    // System.out.println("degrees to rotate: " + percepts.getTargetDirection().getDegrees());
                     if (percepts.getTargetDirection().getDegrees()> 180){
-                        return new Rotate(new Angle(percepts.getTargetDirection().getRadians()-2*Math.PI));
+                        return new Rotate(Angle.fromRadians(percepts.getTargetDirection().getRadians()-2*Math.PI));
                     }
                     else {
-                        return new Rotate(new Angle(percepts.getTargetDirection().getRadians()));
+                        return new Rotate(Angle.fromRadians(percepts.getTargetDirection().getRadians()));
                     }
                 }
             }
@@ -88,26 +88,27 @@ public class OurIntruder implements Intruder{
                     return new Move(new Distance(percepts.getScenarioIntruderPercepts().getMaxMoveDistanceIntruder().getValue() * getSpeedModifier(percepts)));
                 } else {
                     if (obj.getPoint().getClockDirection().getDegrees() > 180){
-                        return new Rotate(new Angle(-1* (obj.getPoint().getClockDirection().getRadians()-2*Math.PI)));
+                        return new Rotate(Angle.fromRadians(-1* (obj.getPoint().getClockDirection().getRadians()-2*Math.PI)));
                     }
                     else {
                         //System.out.println("Rotating: " + (Math.toDegrees(obj.getPoint().getClockDirection().getRadians())));
-                        return new Rotate(new Angle(-1 * (obj.getPoint().getClockDirection().getRadians())));
+                        return new Rotate(Angle.fromRadians(-1 * (obj.getPoint().getClockDirection().getRadians())));
                     }
                 }
             }
             if((obj.getType() == ObjectPerceptType.Teleport) && (justTeleported)) {
                 if (obj.getPoint().getClockDirection().getDegrees() < error || 360 - obj.getPoint().getClockDirection().getDegrees() < error) {
                     return new Move(new Distance(percepts.getScenarioIntruderPercepts().getMaxMoveDistanceIntruder().getValue() * getSpeedModifier(percepts)));
-                }
+                } else {
                     if (obj.getPoint().getClockDirection().getDegrees() > 180) {
                         //System.out.println("Rotating: " + (Math.toDegrees(obj.getPoint().getClockDirection().getRadians() - 2 * Math.PI)));
-                        return new Rotate(new Angle(-1*(obj.getPoint().getClockDirection().getRadians()- 2 * Math.PI)));
+                        return new Rotate(Angle.fromRadians(-1 * (obj.getPoint().getClockDirection().getRadians() - 2 * Math.PI)));
                     } else {
                         //System.out.println("Rotating: " + (Math.toDegrees(obj.getPoint().getClockDirection().getRadians())));
-                        return new Rotate(new Angle( -1*(obj.getPoint().getClockDirection().getRadians())));
-                        }
+                        return new Rotate(Angle.fromRadians(-1 * (obj.getPoint().getClockDirection().getRadians())));
                     }
+                }
+            }
         }
 
             if (!inRandomMoves) {
@@ -121,17 +122,17 @@ public class OurIntruder implements Intruder{
                     } else {
                         counter = counter + 100;
                         if(percepts.getTargetDirection().getRadians() > percepts.getScenarioIntruderPercepts().getScenarioPercepts().getMaxRotationAngle().getRadians() && (360 - percepts.getTargetDirection().getDegrees()) > percepts.getScenarioIntruderPercepts().getScenarioPercepts().getMaxRotationAngle().getDegrees() && percepts.getTargetDirection().getDegrees()>180){
-                            return new Rotate(new Angle(-1*percepts.getScenarioIntruderPercepts().getScenarioPercepts().getMaxRotationAngle().getRadians()));
+                            return new Rotate(Angle.fromRadians(-1*percepts.getScenarioIntruderPercepts().getScenarioPercepts().getMaxRotationAngle().getRadians()));
                         }
                         else if(percepts.getTargetDirection().getRadians() > percepts.getScenarioIntruderPercepts().getScenarioPercepts().getMaxRotationAngle().getRadians() && percepts.getTargetDirection().getDegrees() > percepts.getScenarioIntruderPercepts().getScenarioPercepts().getMaxRotationAngle().getDegrees()&& percepts.getTargetDirection().getDegrees()<=180){
-                            return new Rotate(new Angle(percepts.getScenarioIntruderPercepts().getScenarioPercepts().getMaxRotationAngle().getRadians()));
+                            return new Rotate(Angle.fromRadians(percepts.getScenarioIntruderPercepts().getScenarioPercepts().getMaxRotationAngle().getRadians()));
                         }
                         else{
                             if(percepts.getTargetDirection().getDegrees() > 180) {
-                                return new Rotate(new Angle(percepts.getTargetDirection().getRadians()- 2 * Math.PI));
+                                return new Rotate(Angle.fromRadians(percepts.getTargetDirection().getRadians()- 2 * Math.PI));
                             }
                             else{
-                                return new Rotate(new Angle(percepts.getTargetDirection().getRadians()));
+                                return new Rotate(Angle.fromRadians(percepts.getTargetDirection().getRadians()));
                             }
                         }
 
