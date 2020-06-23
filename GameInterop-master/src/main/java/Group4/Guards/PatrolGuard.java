@@ -39,9 +39,9 @@ import Interop.Percept.Vision.*;
 
 public class PatrolGuard implements Guard{
 
-    private int counter = 0;
+    private int counter = 500;
     boolean inRandomMoves = false;
-
+    boolean targetFound = false;
     private double error = 7.5;
     ArrayList<Action> trace = new ArrayList<Action>();
     private boolean positioning = false;
@@ -59,12 +59,13 @@ public class PatrolGuard implements Guard{
             positioning = false;
         }
 
-        if (inRandomMoves) {
+        if (inRandomMoves || !targetFound) {
             counter--;
             if (counter == 0) {
                 inRandomMoves = false;
+                counter = 500;
             }
-            if (!percepts.wasLastActionExecuted()) {
+            if (!percepts.wasLastActionExecuted() && Math.random()>0.2) {
                 return new Rotate(Angle.fromRadians(percepts.getScenarioGuardPercepts().getScenarioPercepts().getMaxRotationAngle().getRadians() * Game._RANDOM.nextDouble()));
             } else {
                 return new Move(new Distance(percepts.getScenarioGuardPercepts().getMaxMoveDistanceGuard().getValue()));
@@ -86,9 +87,7 @@ public class PatrolGuard implements Guard{
                     return new Move(new Distance(percepts.getScenarioGuardPercepts().getMaxMoveDistanceGuard().getValue()));
                 }
             }
-            if (obj.getType() == ObjectPerceptType.Intruder) {
-                return chase(obj);
-            } else if (obj.getType() == ObjectPerceptType.TargetArea && (!positioning || chasing)) {
+             if (obj.getType() == ObjectPerceptType.TargetArea && (!positioning || chasing)) {
                 positioning = true;
             } else if (positioning) {
                 if (new Distance(obj.getPoint(), new Point(0.0, 0.0)).getValue() > 0.5) {
@@ -96,9 +95,9 @@ public class PatrolGuard implements Guard{
                         return new Move(new Distance(percepts.getScenarioGuardPercepts().getMaxMoveDistanceGuard().getValue()));
                     }
                     if (obj.getPoint().getClockDirection().getDegrees() > 180) {
-                        return new Rotate(Angle.fromRadians(-1 * (obj.getPoint().getClockDirection().getRadians() - 2 * Math.PI)));
+                        return new Rotate(Angle.fromRadians((obj.getPoint().getClockDirection().getRadians() - 2 * Math.PI)));
                     } else {
-                        return new Rotate(Angle.fromRadians(-1 * (obj.getPoint().getClockDirection().getRadians())));
+                        return new Rotate(Angle.fromRadians((obj.getPoint().getClockDirection().getRadians())));
                     }
                 } else if (new Distance(obj.getPoint(), new Point(0.0, 0.0)).getValue() < 0.5) {
                     totalAngle = obj.getPoint().getClockDirection().getRadians();
@@ -134,7 +133,7 @@ public class PatrolGuard implements Guard{
     }
 
 
-    //TODO implement code for the guard to chase and intruder agent
+    //This was here to implement the followguard and patrol guard together.  In this case we did it the other way around and added the patrolling to the followguard
     public GuardAction chase(ObjectPercept o){
         return null;
     }
