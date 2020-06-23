@@ -1,10 +1,10 @@
 package Group4.Guards;
 
 /**
- * Description/ Idea of this guard
+ * Description: Idea of this guard
     * if he sees an intruder he follows it
-    * if he lost him again, he drops a pheromone telling the guard he lost an intruder
-        * basically saying an intruder has to be nearby
+    * if he lost him again, he drops a pheromone telling the guards he lost an intruder
+        * basically saying an intruder has to be near by
 **/
 
 
@@ -23,6 +23,7 @@ import Interop.Percept.Vision.ObjectPerceptType;
 import Interop.Geometry.Point;
 
 public class FollowGuard implements Guard{
+    boolean justTeleported = false;
     private double error = 7.5;
     boolean sawintruder = false;
     boolean positioning = false;
@@ -52,32 +53,6 @@ public class FollowGuard implements Guard{
                     }
                 }
             }
-            if (obj.getType() == ObjectPerceptType.TargetArea) {
-                positioning = true;
-            } else if (positioning) {
-                if (new Distance(obj.getPoint(), new Point(0.0, 0.0)).getValue() > 0.5) {
-                    if (obj.getPoint().getClockDirection().getDegrees() < error || 360 - obj.getPoint().getClockDirection().getDegrees() < error) {
-                        return new Move(new Distance(percepts.getScenarioGuardPercepts().getMaxMoveDistanceGuard().getValue()));
-                    }
-                    if (obj.getPoint().getClockDirection().getDegrees() > 180) {
-                        return new Rotate(Angle.fromRadians( (obj.getPoint().getClockDirection().getRadians() - 2 * Math.PI)));
-                    } else {
-                        return new Rotate(Angle.fromRadians( (obj.getPoint().getClockDirection().getRadians())));
-                    }
-                } else if (new Distance(obj.getPoint(), new Point(0.0, 0.0)).getValue() < 0.5) {
-                    totalfromRadians = obj.getPoint().getClockDirection().getRadians();
-                    if (totalfromRadians > percepts.getScenarioGuardPercepts().getScenarioPercepts().getMaxRotationAngle().getRadians()) {
-                        totalfromRadians = totalfromRadians - percepts.getScenarioGuardPercepts().getScenarioPercepts().getMaxRotationAngle().getRadians();
-                        return new Rotate(Angle.fromRadians(-1*percepts.getScenarioGuardPercepts().getScenarioPercepts().getMaxRotationAngle().getRadians()));
-                    } else {
-                        return new Rotate(Angle.fromRadians(-1*obj.getPoint().getClockDirection().getRadians()));
-                    }
-                } else if (totalfromRadians == 0) {
-                    positioning = false;
-                    totalfromRadians = Math.PI / 2;
-                    return new Move(new Distance(10));
-                }
-            }
         }
 
         if(sawintruder){
@@ -96,7 +71,7 @@ public class FollowGuard implements Guard{
             }
         }
 
-        //look for intruders in the SentryTower
+        //look for intruders out of the SentryTower
         /*
         if(percepts.getAreaPercepts().isInSentryTower()){
             return  new Rotate(Angle.fromDegrees(15));
@@ -105,6 +80,32 @@ public class FollowGuard implements Guard{
          */
 
         for(ObjectPercept obj : percepts.getVision().getObjects().getAll()) {
+            if(obj.getType() == ObjectPerceptType.Teleport && !justTeleported) {
+                if (obj.getPoint().getClockDirection().getDegrees() < error || 360 - obj.getPoint().getClockDirection().getDegrees() < error) {
+                    return new Move(new Distance(percepts.getScenarioGuardPercepts().getMaxMoveDistanceGuard().getValue() * getSpeedModifier(percepts)));
+                } else {
+                    if (obj.getPoint().getClockDirection().getDegrees() > 180){
+                        return new Rotate(Angle.fromRadians(-1* (obj.getPoint().getClockDirection().getRadians()-2*Math.PI)));
+                    }
+                    else {
+                        //System.out.println("Rotating: " + (Math.toDegrees(obj.getPoint().getClockDirection().getRadians())));
+                        return new Rotate(Angle.fromRadians(-1 * (obj.getPoint().getClockDirection().getRadians())));
+                    }
+                }
+            }
+            if((obj.getType() == ObjectPerceptType.Teleport) && (justTeleported)) {
+                if (obj.getPoint().getClockDirection().getDegrees() < error || 360 - obj.getPoint().getClockDirection().getDegrees() < error) {
+                    return new Move(new Distance(percepts.getScenarioGuardPercepts().getMaxMoveDistanceGuard().getValue() * getSpeedModifier(percepts)));
+                } else {
+                    if (obj.getPoint().getClockDirection().getDegrees() > 180) {
+                        //System.out.println("Rotating: " + (Math.toDegrees(obj.getPoint().getClockDirection().getRadians() - 2 * Math.PI)));
+                        return new Rotate(Angle.fromRadians(-1 * (obj.getPoint().getClockDirection().getRadians() - 2 * Math.PI)));
+                    } else {
+                        //System.out.println("Rotating: " + (Math.toDegrees(obj.getPoint().getClockDirection().getRadians())));
+                        return new Rotate(Angle.fromRadians(-1 * (obj.getPoint().getClockDirection().getRadians())));
+                    }
+                }
+            }
             if (obj.getType() == ObjectPerceptType.SentryTower) {
                 sawintruder = true;
                 if (obj.getPoint().getClockDirection().getDegrees() < error || 360 - obj.getPoint().getClockDirection().getDegrees() < error) {
