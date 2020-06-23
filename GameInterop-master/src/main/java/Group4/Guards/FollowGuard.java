@@ -31,6 +31,9 @@ public class FollowGuard implements Guard{
 
     @Override
     public GuardAction getAction(GuardPercepts percepts) {
+        if(percepts.getAreaPercepts().isJustTeleported()){
+            justTeleported = true;
+        }
 
         for(ObjectPercept obj : percepts.getVision().getObjects().getAll()) {
             if (obj.getType() == ObjectPerceptType.Intruder) {
@@ -39,13 +42,10 @@ public class FollowGuard implements Guard{
                 if (obj.getPoint().getClockDirection().getDegrees() < error || 360 - obj.getPoint().getClockDirection().getDegrees() < error) {
                     return new Move(new Distance(percepts.getScenarioGuardPercepts().getMaxMoveDistanceGuard().getValue() * getSpeedModifier(percepts)));
                 } else {
-                    //System.out.println("Degrees towards target: " + obj.getPoint().getClockDirection().getDegrees());
                     if (obj.getPoint().getClockDirection().getDegrees() > 180){
-                        // System.out.println("Rotating: " + (Math.toDegrees(obj.getPoint().getClockDirection().getRadians()-2*Math.PI)));
                         return new Rotate(Angle.fromRadians(-1* (obj.getPoint().getClockDirection().getRadians()-2*Math.PI)));
                     }
                     else {
-                        //System.out.println("Rotating: " + (Math.toDegrees(obj.getPoint().getClockDirection().getRadians())));
                         return new Rotate(Angle.fromRadians(-1 * (obj.getPoint().getClockDirection().getRadians())));
                     }
                 }
