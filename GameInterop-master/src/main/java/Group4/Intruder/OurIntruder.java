@@ -1,41 +1,16 @@
 package Group4.Intruder;
 
-import java.awt.geom.Rectangle2D;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.PrintWriter;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Random;
-import java.util.Scanner;
-import java.util.Set;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-
-import Group4.Agent;
-import Group4.OurInterop.*;
 import Group9.Game;
-import Group9.agent.container.GuardContainer;
-import Group9.agent.container.IntruderContainer;
-import Group9.math.Vector2;
-import Group9.tree.PointContainer;
-import Group9.agent.container.AgentContainer;
-import Group9.agent.container.IntruderContainer;
 import Interop.Action.IntruderAction;
 import Interop.Action.Move;
 import Interop.Action.Rotate;
 import Interop.Agent.Intruder;
 import Interop.Geometry.Angle;
-import Interop.Geometry.Direction;
 import Interop.Geometry.Distance;
 import Interop.Percept.*;
 import Interop.Percept.Scenario.*;
-import Interop.Percept.Smell.*;
-import Interop.Percept.Sound.*;
 import Interop.Percept.Vision.*;
 
 import static java.lang.Math.abs;
@@ -47,7 +22,7 @@ public class OurIntruder implements Intruder{
     boolean inRandomMoves = false;
     private double error = 10;
     private final static Charset ENCODING = StandardCharsets.UTF_8;
-    static final int MAXIMUM_MOVES_BEFORE_THRESHOLD_CHANGE = 10000;
+    static final int MAXIMUM_MOVES_BEFORE_THRESHOLD_CHANGE = 600;
 
     @Override
     public IntruderAction getAction(IntruderPercepts percepts) {

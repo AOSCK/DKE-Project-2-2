@@ -7,20 +7,17 @@ package Group4.Guards;
         * basically saying an intruder has to be near by
 **/
 
-
 import Group9.Game;
 import Interop.Action.*;
 import Interop.Agent.Guard;
 import Interop.Geometry.Angle;
 import Interop.Geometry.Distance;
 import Interop.Percept.GuardPercepts;
-import Interop.Percept.*;
 import Interop.Percept.Scenario.SlowDownModifiers;
 import Interop.Percept.Smell.SmellPerceptType;
 import Interop.Percept.Smell.SmellPercept;
 import Interop.Percept.Vision.ObjectPercept;
 import Interop.Percept.Vision.ObjectPerceptType;
-import Interop.Geometry.Point;
 
 public class FollowGuard implements Guard{
     boolean justTeleported = false;
